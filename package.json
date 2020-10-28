@@ -20,6 +20,9 @@
     "@sudoo/pattern": "*",
     "@sudoo/verify": "*"
   },
+  "dependencies": {
+    "@sudoo/magic": "^1.8.0"
+  },
   "devDependencies": {
     "@sudoo/io": "^1.8.0",
     "@sudoo/lambda": "^2.0.0",
@@ -42,8 +45,5 @@
     ],
     "report-dir": "coverage",
     "sourceMap": true
-  },
-  "dependencies": {
-    "@sudoo/magic": "^1.8.0"
   }
 }
