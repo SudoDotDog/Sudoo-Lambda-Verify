@@ -6,8 +6,8 @@
 
 ```sh
 yarn add @sudoo/lambda-verify
-yarn add @sudoo/verify @sudoo/pattern # Peer Dependencies
+yarn add @sudoo/lambda @sudoo/verify @sudoo/pattern # Peer Dependencies
 # Or
 npm install @sudoo/lambda-verify --save
-npm install @sudoo/verify @sudoo/pattern --save # Peer Dependencies
+npm install @sudoo/lambda @sudoo/verify @sudoo/pattern --save # Peer Dependencies
 ```

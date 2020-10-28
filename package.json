@@ -1,0 +1,45 @@
+{
+  "name": "@sudoo/lambda-verify",
+  "version": "1.0.0",
+  "description": ":sweat_drops: Verify cover for lambda",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SudoDotDog/Sudoo-Lambda-Verify.git"
+  },
+  "keywords": [
+    "Lambda",
+    "Verify"
+  ],
+  "author": "WMXPY",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SudoDotDog/Sudoo-Lambda-Verify/issues"
+  },
+  "homepage": "https://github.com/SudoDotDog/Sudoo-Lambda-Verify#readme",
+  "peerDependencies": {
+    "@sudoo/pattern": "*",
+    "@sudoo/verify": "*"
+  },
+  "devDependencies": {
+    "@sudoo/io": "^1.8.0",
+    "@sudoo/lambda": "^2.0.0",
+    "@sudoo/pattern": "^1.6.1",
+    "@sudoo/triforce": "^2.9.5",
+    "@sudoo/verify": "^1.16.0"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "instrument": true,
+    "reporter": [
+      "json",
+      "text-summary"
+    ],
+    "report-dir": "coverage",
+    "sourceMap": true
+  }
+}
