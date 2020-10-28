@@ -8,7 +8,7 @@ import { createLambdaResponse } from "@sudoo/lambda";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic/http";
 import { Pattern } from "@sudoo/pattern";
 import { StringedResult, Verifier } from "@sudoo/verify";
-import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult, Context } from "aws-lambda";
+import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult, Callback, Context } from "aws-lambda";
 import { VerifiedAPIGatewayProxyHandler, VerifyLambdaProxyResultCreator } from "./declare";
 
 export class LambdaVerifier {
@@ -101,16 +101,16 @@ export class LambdaVerifier {
 
     public warpAPIGateWayProxyHandler(handler: VerifiedAPIGatewayProxyHandler): APIGatewayProxyHandler {
 
-        return async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
+        return async (event: APIGatewayProxyEvent, context: Context, callback: Callback<APIGatewayProxyResult>): Promise<APIGatewayProxyResult> => {
 
-            if (event.body === null && this._bodyPattern) {
+            if (!Boolean(event.body) && this._bodyPattern) {
 
                 return this._getNoBodyLambdaProxyResult();
             }
 
             try {
 
-                const rawBody: any = event.body === null ? null : JSON.parse(event.body);
+                const rawBody: any = Boolean(event.body) ? JSON.parse(event.body as any) : null;
 
                 if (this._headerPattern) {
 
@@ -150,7 +150,7 @@ export class LambdaVerifier {
                     verifiedHeader: event.headers,
                     verifiedParams: event.pathParameters,
                     verifiedBody: rawBody,
-                }, context));
+                }, context, callback));
             } catch (error) {
 
                 return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, error.message);
