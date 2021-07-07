@@ -1,6 +1,6 @@
 {
   "name": "@sudoo/lambda-verify",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": ":sweat_drops: Verify cover for lambda",
   "repository": {
     "type": "git",

@@ -11,6 +11,8 @@ import { StringedResult, Verifier } from "@sudoo/verify";
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult, Callback, Context } from "aws-lambda";
 import { VerifiedAPIGatewayProxyHandler, VerifyLambdaProxyResultCreator } from "./declare";
 
+export type LambdaVerifierMixin = (verifier: LambdaVerifier) => void;
+
 export class LambdaVerifier {
 
     public static create(): LambdaVerifier {
@@ -43,6 +45,12 @@ export class LambdaVerifier {
         this._overrideInvalidHeaderLambdaProxyResultCreator = null;
         this._overrideInvalidParamLambdaProxyResultCreator = null;
         this._overrideInvalidBodyLambdaProxyResultCreator = null;
+    }
+
+    public use(mixin: LambdaVerifierMixin): this {
+
+        mixin(this);
+        return this;
     }
 
     public setHeaderPattern(pattern: Pattern): this {
