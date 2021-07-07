@@ -24,8 +24,9 @@
     "@sudoo/magic": "^1.8.0"
   },
   "devDependencies": {
-    "@sudoo/io": "^1.8.0",
+    "@sudoo/build-utils": "^1.0.0",
     "@sudoo/lambda": "^2.0.0",
+    "@sudoo/license": "^1.1.0",
     "@sudoo/pattern": "^1.6.1",
     "@sudoo/triforce": "^2.9.5",
     "@sudoo/verify": "^1.16.0",
