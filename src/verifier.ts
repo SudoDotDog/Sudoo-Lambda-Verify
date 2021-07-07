@@ -108,6 +108,16 @@ export class LambdaVerifier {
                 return this._getNoBodyLambdaProxyResult();
             }
 
+            if (!Boolean(event.pathParameters) && this._paramPattern) {
+
+                return this._getNoParamLambdaProxyResult();
+            }
+
+            if (!Boolean(event.headers) && this._headerPattern) {
+
+                return this._getNoHeaderLambdaProxyResult();
+            }
+
             try {
 
                 const rawBody: any = Boolean(event.body) ? JSON.parse(event.body as any) : null;

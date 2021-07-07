@@ -11,7 +11,7 @@ import { createStrictMapPattern, createStringPattern } from "@sudoo/pattern";
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from "aws-lambda";
 import { expect } from "chai";
 import * as Chance from "chance";
-import { LambdaVerifier } from "../src";
+import { LambdaVerifier } from "../../src";
 
 describe('Given {Verifier} Class', (): void => {
 
