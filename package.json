@@ -28,7 +28,7 @@
     "@sudoo/lambda": "^2.0.0",
     "@sudoo/license": "^1.1.0",
     "@sudoo/pattern": "^1.6.1",
-    "@sudoo/triforce": "^2.9.5",
+    "@sudoo/triforce": "^3.2.0",
     "@sudoo/verify": "^1.16.0",
     "@types/aws-lambda": "^8.10.64"
   },
