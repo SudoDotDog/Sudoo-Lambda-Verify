@@ -10,6 +10,7 @@ import { Pattern } from "@sudoo/pattern";
 import { StringedResult, Verifier } from "@sudoo/verify";
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult, Callback, Context } from "aws-lambda";
 import { VerifiedAPIGatewayProxyHandler, VerifyLambdaProxyResultCreator } from "./declare";
+import { extractAndParseRawBody } from "./util";
 
 export type LambdaVerifierMixin = (verifier: LambdaVerifier) => void;
 
@@ -128,7 +129,7 @@ export class LambdaVerifier {
 
             try {
 
-                const rawBody: any = Boolean(event.body) ? JSON.parse(event.body as any) : null;
+                const rawBody: any = extractAndParseRawBody(event);
 
                 if (this._headerPattern) {
 
@@ -171,7 +172,12 @@ export class LambdaVerifier {
                 }, context, callback));
             } catch (error) {
 
-                return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, error.message);
+                const assertedError: any = error;
+
+                return createLambdaResponse(
+                    HTTP_RESPONSE_CODE.BAD_REQUEST,
+                    assertedError.message,
+                );
             }
         };
     }
