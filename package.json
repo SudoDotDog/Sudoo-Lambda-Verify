@@ -1,6 +1,6 @@
 {
   "name": "@sudoo/lambda-verify",
-  "version": "1.2.0",
+  "version": "1.4.2",
   "description": "Verify cover for lambda",
   "repository": {
     "type": "git",
@@ -21,13 +21,13 @@
     "@sudoo/verify": "*"
   },
   "dependencies": {
-    "@sudoo/magic": "^1.8.0"
+    "@sudoo/magic": "^1.9.0"
   },
   "devDependencies": {
     "@sudoo/build-utils": "^1.0.0",
     "@sudoo/lambda": "^2.0.0",
     "@sudoo/license": "^2.1.0",
-    "@sudoo/pattern": "^1.6.1",
+    "@sudoo/pattern": "^1.8.0",
     "@sudoo/triforce": "^3.5.1",
     "@sudoo/verify": "^1.16.0",
     "@types/aws-lambda": "^8.10.64"
