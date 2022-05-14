@@ -21,36 +21,77 @@ export class LambdaVerifier {
         return new LambdaVerifier();
     }
 
+    private _allowEmptyHeader: boolean;
+    private _allowEmptyParam: boolean;
+    private _allowEmptyQuery: boolean;
+    private _allowEmptyBody: boolean;
+
     private _headerPattern: Pattern | null;
     private _paramPattern: Pattern | null;
+    private _queryPattern: Pattern | null;
     private _bodyPattern: Pattern | null;
 
     private _overrideNoHeaderLambdaProxyResult: APIGatewayProxyResult | null;
     private _overrideNoParamLambdaProxyResult: APIGatewayProxyResult | null;
+    private _overrideNoQueryLambdaProxyResult: APIGatewayProxyResult | null;
     private _overrideNoBodyLambdaProxyResult: APIGatewayProxyResult | null;
 
     private _overrideInvalidHeaderLambdaProxyResultCreator: VerifyLambdaProxyResultCreator | null;
     private _overrideInvalidParamLambdaProxyResultCreator: VerifyLambdaProxyResultCreator | null;
+    private _overrideInvalidQueryLambdaProxyResultCreator: VerifyLambdaProxyResultCreator | null;
     private _overrideInvalidBodyLambdaProxyResultCreator: VerifyLambdaProxyResultCreator | null;
 
     private constructor() {
 
+        this._allowEmptyHeader = false;
+        this._allowEmptyParam = false;
+        this._allowEmptyQuery = false;
+        this._allowEmptyBody = false;
+
         this._headerPattern = null;
         this._paramPattern = null;
+        this._queryPattern = null;
         this._bodyPattern = null;
 
         this._overrideNoHeaderLambdaProxyResult = null;
         this._overrideNoParamLambdaProxyResult = null;
+        this._overrideNoQueryLambdaProxyResult = null;
         this._overrideNoBodyLambdaProxyResult = null;
 
         this._overrideInvalidHeaderLambdaProxyResultCreator = null;
         this._overrideInvalidParamLambdaProxyResultCreator = null;
+        this._overrideInvalidQueryLambdaProxyResultCreator = null;
         this._overrideInvalidBodyLambdaProxyResultCreator = null;
     }
 
     public use(mixin: LambdaVerifierMixin): this {
 
         mixin(this);
+        return this;
+    }
+
+    public setAllowEmptyHeader(allow: boolean): this {
+
+        this._allowEmptyHeader = allow;
+        return this;
+    }
+
+    public setAllowEmptyParam(allow: boolean): this {
+
+        this._allowEmptyParam = allow;
+        return this;
+    }
+
+
+    public setAllowEmptyQuery(allow: boolean): this {
+
+        this._allowEmptyQuery = allow;
+        return this;
+    }
+
+    public setAllowEmptyBody(allow: boolean): this {
+
+        this._allowEmptyBody = allow;
         return this;
     }
 
@@ -63,6 +104,12 @@ export class LambdaVerifier {
     public setParamPattern(pattern: Pattern): this {
 
         this._paramPattern = pattern;
+        return this;
+    }
+
+    public setQueryPattern(pattern: Pattern): this {
+
+        this._queryPattern = pattern;
         return this;
     }
 
@@ -84,6 +131,12 @@ export class LambdaVerifier {
         return this;
     }
 
+    public setOverrideNoQueryLambdaProxyResult(result: APIGatewayProxyResult): this {
+
+        this._overrideNoQueryLambdaProxyResult = result;
+        return this;
+    }
+
     public setOverrideNoBodyLambdaProxyResult(result: APIGatewayProxyResult): this {
 
         this._overrideNoBodyLambdaProxyResult = result;
@@ -102,6 +155,12 @@ export class LambdaVerifier {
         return this;
     }
 
+    public setOverrideInvalidQueryLambdaProxyResultCreator(creator: VerifyLambdaProxyResultCreator): this {
+
+        this._overrideInvalidQueryLambdaProxyResultCreator = creator;
+        return this;
+    }
+
     public setOverrideInvalidBodyLambdaProxyResultCreator(creator: VerifyLambdaProxyResultCreator): this {
 
         this._overrideInvalidBodyLambdaProxyResultCreator = creator;
@@ -112,19 +171,24 @@ export class LambdaVerifier {
 
         return async (event: APIGatewayProxyEvent, context: Context, callback: Callback<APIGatewayProxyResult>): Promise<APIGatewayProxyResult> => {
 
-            if (!Boolean(event.body) && this._bodyPattern) {
+            if (!this._allowEmptyHeader && !Boolean(event.headers) && this._headerPattern) {
 
-                return this._getNoBodyLambdaProxyResult();
+                return this._getNoHeaderLambdaProxyResult();
             }
 
-            if (!Boolean(event.pathParameters) && this._paramPattern) {
+            if (!this._allowEmptyParam && !Boolean(event.pathParameters) && this._paramPattern) {
 
                 return this._getNoParamLambdaProxyResult();
             }
 
-            if (!Boolean(event.headers) && this._headerPattern) {
+            if (!this._allowEmptyQuery && !Boolean(event.queryStringParameters) && this._queryPattern) {
 
-                return this._getNoHeaderLambdaProxyResult();
+                return this._getNoQueryLambdaProxyResult();
+            }
+
+            if (!this._allowEmptyBody && !Boolean(event.body) && this._bodyPattern) {
+
+                return this._getNoBodyLambdaProxyResult();
             }
 
             try {
@@ -153,6 +217,17 @@ export class LambdaVerifier {
                     }
                 }
 
+                if (this._queryPattern) {
+
+                    const queryVerifier: Verifier = Verifier.create(this._queryPattern);
+                    const queryVerifyResult: StringedResult = queryVerifier.conclude(event.queryStringParameters);
+
+                    if (!queryVerifyResult.succeed) {
+
+                        return this._getInvalidQueryLambdaProxyResultCreator(queryVerifyResult);
+                    }
+                }
+
                 if (this._bodyPattern) {
 
                     const bodyVerifier: Verifier = Verifier.create(this._bodyPattern);
@@ -166,9 +241,10 @@ export class LambdaVerifier {
 
                 return await Promise.resolve(handler({
                     ...event,
-                    verifiedHeader: event.headers,
-                    verifiedParams: event.pathParameters,
-                    verifiedBody: rawBody,
+                    verifiedHeader: event.headers ?? {},
+                    verifiedParams: event.pathParameters ?? {},
+                    verifiedQuery: event.queryStringParameters ?? {},
+                    verifiedBody: rawBody ?? {},
                 }, context, callback));
             } catch (error) {
 
@@ -198,6 +274,15 @@ export class LambdaVerifier {
         }
 
         return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, '[Sudoo-Lambda-Verify] Param Undefined');
+    }
+
+    private _getNoQueryLambdaProxyResult(): APIGatewayProxyResult {
+
+        if (this._overrideNoQueryLambdaProxyResult) {
+            return this._overrideNoQueryLambdaProxyResult;
+        }
+
+        return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, '[Sudoo-Lambda-Verify] Query Undefined');
     }
 
     private _getNoBodyLambdaProxyResult(): APIGatewayProxyResult {
@@ -235,6 +320,20 @@ export class LambdaVerifier {
         }
 
         return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, `[Sudoo-Lambda-Verify] Invalid Param, ${verifyResult.invalids[0]}`);
+    }
+
+    private _getInvalidQueryLambdaProxyResultCreator(verifyResult: StringedResult): APIGatewayProxyResult {
+
+        if (this._overrideInvalidQueryLambdaProxyResultCreator) {
+
+            return this._overrideInvalidQueryLambdaProxyResultCreator(verifyResult);
+        }
+
+        if (!verifyResult.invalids[0]) {
+            return createLambdaResponse(HTTP_RESPONSE_CODE.INTERNAL_SERVER_ERROR, '[Sudoo-Lambda-Verify] Invalid Query, Internal Server Error');
+        }
+
+        return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, `[Sudoo-Lambda-Verify] Invalid Query, ${verifyResult.invalids[0]}`);
     }
 
     private _getInvalidBodyLambdaProxyResultCreator(verifyResult: StringedResult): APIGatewayProxyResult {

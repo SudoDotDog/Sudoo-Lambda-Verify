@@ -9,11 +9,17 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, Callback, Context } from "
 
 export type VerifyLambdaProxyResultCreator = (verifyResult: StringedResult) => APIGatewayProxyResult;
 
-export type VerifiedAPIGatewayProxyEvent = APIGatewayProxyEvent & {
+export type VerifiedAPIGatewayProxyEvent<
+    Header = any,
+    Params = any,
+    Query = any,
+    Body = any,
+    > = APIGatewayProxyEvent & {
 
-    readonly verifiedHeader: any;
-    readonly verifiedParams: any;
-    readonly verifiedBody: any;
-};
+        readonly verifiedHeader: Header;
+        readonly verifiedParams: Params;
+        readonly verifiedQuery: Query;
+        readonly verifiedBody: Body;
+    };
 
 export type VerifiedAPIGatewayProxyHandler = (event: VerifiedAPIGatewayProxyEvent, _context: Context, callback: Callback<APIGatewayProxyResult>) => APIGatewayProxyResult | Promise<APIGatewayProxyResult>;
