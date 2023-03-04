@@ -4,7 +4,7 @@
  * @description Verifier
  */
 
-import { createLambdaResponse } from "@sudoo/lambda";
+import { LambdaResponseManager } from "@sudoo/lambda";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic/http";
 import { Pattern } from "@sudoo/pattern";
 import { StringedResult, Verifier } from "@sudoo/verify";
@@ -16,10 +16,14 @@ export type LambdaVerifierMixin = (verifier: LambdaVerifier) => void;
 
 export class LambdaVerifier {
 
-    public static create(): LambdaVerifier {
+    public static create(
+        lambdaManager: LambdaResponseManager = LambdaResponseManager.create(),
+    ): LambdaVerifier {
 
-        return new LambdaVerifier();
+        return new LambdaVerifier(lambdaManager);
     }
+
+    private readonly _lambdaManager: LambdaResponseManager;
 
     private _allowEmptyHeader: boolean;
     private _allowEmptyParam: boolean;
@@ -41,7 +45,9 @@ export class LambdaVerifier {
     private _overrideInvalidQueryLambdaProxyResultCreator: VerifyLambdaProxyResultCreator | null;
     private _overrideInvalidBodyLambdaProxyResultCreator: VerifyLambdaProxyResultCreator | null;
 
-    private constructor() {
+    private constructor(lambdaManager: LambdaResponseManager) {
+
+        this._lambdaManager = lambdaManager;
 
         this._allowEmptyHeader = false;
         this._allowEmptyParam = false;
@@ -250,10 +256,10 @@ export class LambdaVerifier {
 
                 const assertedError: any = error;
 
-                return createLambdaResponse(
-                    HTTP_RESPONSE_CODE.BAD_REQUEST,
-                    assertedError.message,
-                );
+                return this._lambdaManager
+                    .createBuilder()
+                    .addBody("reason", assertedError.message)
+                    .build(HTTP_RESPONSE_CODE.BAD_REQUEST);
             }
         };
     }
@@ -264,7 +270,10 @@ export class LambdaVerifier {
             return this._overrideNoHeaderLambdaProxyResult;
         }
 
-        return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, '[Sudoo-Lambda-Verify] Header Undefined');
+        return this._lambdaManager
+            .createBuilder()
+            .addBody("reason", "[Sudoo-Lambda-Verify] Header Undefined")
+            .build(HTTP_RESPONSE_CODE.BAD_REQUEST);
     }
 
     private _getNoParamLambdaProxyResult(): APIGatewayProxyResult {
@@ -273,7 +282,10 @@ export class LambdaVerifier {
             return this._overrideNoParamLambdaProxyResult;
         }
 
-        return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, '[Sudoo-Lambda-Verify] Param Undefined');
+        return this._lambdaManager
+            .createBuilder()
+            .addBody("reason", "[Sudoo-Lambda-Verify] Param Undefined")
+            .build(HTTP_RESPONSE_CODE.BAD_REQUEST);
     }
 
     private _getNoQueryLambdaProxyResult(): APIGatewayProxyResult {
@@ -282,7 +294,10 @@ export class LambdaVerifier {
             return this._overrideNoQueryLambdaProxyResult;
         }
 
-        return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, '[Sudoo-Lambda-Verify] Query Undefined');
+        return this._lambdaManager
+            .createBuilder()
+            .addBody("reason", "[Sudoo-Lambda-Verify] Query Undefined")
+            .build(HTTP_RESPONSE_CODE.BAD_REQUEST);
     }
 
     private _getNoBodyLambdaProxyResult(): APIGatewayProxyResult {
@@ -291,7 +306,11 @@ export class LambdaVerifier {
             return this._overrideNoBodyLambdaProxyResult;
         }
 
-        return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, '[Sudoo-Lambda-Verify] Body Undefined');
+
+        return this._lambdaManager
+            .createBuilder()
+            .addBody("reason", "[Sudoo-Lambda-Verify] Body Undefined")
+            .build(HTTP_RESPONSE_CODE.BAD_REQUEST);
     }
 
     private _getInvalidHeaderLambdaProxyResultCreator(verifyResult: StringedResult): APIGatewayProxyResult {
@@ -302,10 +321,17 @@ export class LambdaVerifier {
         }
 
         if (!verifyResult.invalids[0]) {
-            return createLambdaResponse(HTTP_RESPONSE_CODE.INTERNAL_SERVER_ERROR, '[Sudoo-Lambda-Verify] Invalid Header, Internal Server Error');
+
+            return this._lambdaManager
+                .createBuilder()
+                .addBody("reason", "[Sudoo-Lambda-Verify] Invalid Header, Internal Server Error")
+                .build(HTTP_RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
 
-        return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, `[Sudoo-Lambda-Verify] Invalid Header, ${verifyResult.invalids[0]}`);
+        return this._lambdaManager
+            .createBuilder()
+            .addBody("reason", `[Sudoo-Lambda-Verify] Invalid Header, ${verifyResult.invalids[0]}`)
+            .build(HTTP_RESPONSE_CODE.BAD_REQUEST);
     }
 
     private _getInvalidParamLambdaProxyResultCreator(verifyResult: StringedResult): APIGatewayProxyResult {
@@ -316,10 +342,17 @@ export class LambdaVerifier {
         }
 
         if (!verifyResult.invalids[0]) {
-            return createLambdaResponse(HTTP_RESPONSE_CODE.INTERNAL_SERVER_ERROR, '[Sudoo-Lambda-Verify] Invalid Param, Internal Server Error');
+
+            return this._lambdaManager
+                .createBuilder()
+                .addBody("reason", "[Sudoo-Lambda-Verify] Invalid Param, Internal Server Error")
+                .build(HTTP_RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
 
-        return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, `[Sudoo-Lambda-Verify] Invalid Param, ${verifyResult.invalids[0]}`);
+        return this._lambdaManager
+            .createBuilder()
+            .addBody("reason", `[Sudoo-Lambda-Verify] Invalid Param, ${verifyResult.invalids[0]}`)
+            .build(HTTP_RESPONSE_CODE.BAD_REQUEST);
     }
 
     private _getInvalidQueryLambdaProxyResultCreator(verifyResult: StringedResult): APIGatewayProxyResult {
@@ -330,10 +363,17 @@ export class LambdaVerifier {
         }
 
         if (!verifyResult.invalids[0]) {
-            return createLambdaResponse(HTTP_RESPONSE_CODE.INTERNAL_SERVER_ERROR, '[Sudoo-Lambda-Verify] Invalid Query, Internal Server Error');
+
+            return this._lambdaManager
+                .createBuilder()
+                .addBody("reason", "[Sudoo-Lambda-Verify] Invalid Query, Internal Server Error")
+                .build(HTTP_RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
 
-        return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, `[Sudoo-Lambda-Verify] Invalid Query, ${verifyResult.invalids[0]}`);
+        return this._lambdaManager
+            .createBuilder()
+            .addBody("reason", `[Sudoo-Lambda-Verify] Invalid Query, ${verifyResult.invalids[0]}`)
+            .build(HTTP_RESPONSE_CODE.BAD_REQUEST);
     }
 
     private _getInvalidBodyLambdaProxyResultCreator(verifyResult: StringedResult): APIGatewayProxyResult {
@@ -344,9 +384,16 @@ export class LambdaVerifier {
         }
 
         if (!verifyResult.invalids[0]) {
-            return createLambdaResponse(HTTP_RESPONSE_CODE.INTERNAL_SERVER_ERROR, '[Sudoo-Lambda-Verify] Invalid Body, Internal Server Error');
+
+            return this._lambdaManager
+                .createBuilder()
+                .addBody("reason", "[Sudoo-Lambda-Verify] Invalid Body, Internal Server Error")
+                .build(HTTP_RESPONSE_CODE.INTERNAL_SERVER_ERROR);
         }
 
-        return createLambdaResponse(HTTP_RESPONSE_CODE.BAD_REQUEST, `[Sudoo-Lambda-Verify] Invalid Body, ${verifyResult.invalids[0]}`);
+        return this._lambdaManager
+            .createBuilder()
+            .addBody("reason", `[Sudoo-Lambda-Verify] Invalid Body, ${verifyResult.invalids[0]}`)
+            .build(HTTP_RESPONSE_CODE.BAD_REQUEST);
     }
 }

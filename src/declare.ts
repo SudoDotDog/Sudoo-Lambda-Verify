@@ -14,12 +14,12 @@ export type VerifiedAPIGatewayProxyEvent<
     Params = any,
     Query = any,
     Body = any,
-    > = APIGatewayProxyEvent & {
+> = APIGatewayProxyEvent & {
 
-        readonly verifiedHeader: Header;
-        readonly verifiedParams: Params;
-        readonly verifiedQuery: Query;
-        readonly verifiedBody: Body;
-    };
+    readonly verifiedHeader: Header;
+    readonly verifiedParams: Params;
+    readonly verifiedQuery: Query;
+    readonly verifiedBody: Body;
+};
 
 export type VerifiedAPIGatewayProxyHandler = (event: VerifiedAPIGatewayProxyEvent, _context: Context, callback: Callback<APIGatewayProxyResult>) => APIGatewayProxyResult | Promise<APIGatewayProxyResult>;
