@@ -5,7 +5,7 @@
  * @override Unit Test
  */
 
-import { createLambdaResponse } from "@sudoo/lambda";
+import { LambdaResponseBuilder } from "@sudoo/lambda";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { createStrictMapPattern, createStringPattern } from "@sudoo/pattern";
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from "aws-lambda";
@@ -35,7 +35,9 @@ describe('Given {Verifier} Class', (): void => {
         }));
 
         const wrapped: APIGatewayProxyHandler = verifier.warpAPIGateWayProxyHandler(() => {
-            return createLambdaResponse(HTTP_RESPONSE_CODE.OK);
+            return LambdaResponseBuilder
+                .create()
+                .build(HTTP_RESPONSE_CODE.OK);
         });
 
         const result: APIGatewayProxyResult = await wrapped({
@@ -47,6 +49,9 @@ describe('Given {Verifier} Class', (): void => {
         expect(result).to.be.deep.equal({
             statusCode: HTTP_RESPONSE_CODE.OK,
             body: JSON.stringify({}),
+            headers: {},
+            multiValueHeaders: {},
+            isBase64Encoded: false,
         });
     });
 
@@ -61,7 +66,9 @@ describe('Given {Verifier} Class', (): void => {
         }));
 
         const wrapped: APIGatewayProxyHandler = verifier.warpAPIGateWayProxyHandler(() => {
-            return createLambdaResponse(HTTP_RESPONSE_CODE.OK);
+            return LambdaResponseBuilder
+                .create()
+                .build(HTTP_RESPONSE_CODE.OK);
         });
 
         const result: APIGatewayProxyResult = await wrapped({
@@ -72,7 +79,12 @@ describe('Given {Verifier} Class', (): void => {
 
         expect(result).to.be.deep.equal({
             statusCode: HTTP_RESPONSE_CODE.BAD_REQUEST,
-            body: JSON.stringify(`[Sudoo-Lambda-Verify] Invalid Header, Invalid Type of [${headerKey}]; Should be type of "string"; But got type of "number"`),
+            body: JSON.stringify({
+                reason: `[Sudoo-Lambda-Verify] Invalid Header, Invalid Type of [${headerKey}]; Should be type of "string"; But got type of "number"`,
+            }),
+            headers: {},
+            multiValueHeaders: {},
+            isBase64Encoded: false,
         });
     });
 
@@ -87,7 +99,9 @@ describe('Given {Verifier} Class', (): void => {
         }));
 
         const wrapped: APIGatewayProxyHandler = verifier.warpAPIGateWayProxyHandler(() => {
-            return createLambdaResponse(HTTP_RESPONSE_CODE.OK);
+            return LambdaResponseBuilder
+                .create()
+                .build(HTTP_RESPONSE_CODE.OK);
         });
 
         const result: APIGatewayProxyResult = await wrapped({
@@ -99,6 +113,9 @@ describe('Given {Verifier} Class', (): void => {
         expect(result).to.be.deep.equal({
             statusCode: HTTP_RESPONSE_CODE.OK,
             body: JSON.stringify({}),
+            headers: {},
+            multiValueHeaders: {},
+            isBase64Encoded: false,
         });
     });
 
@@ -113,7 +130,9 @@ describe('Given {Verifier} Class', (): void => {
         }));
 
         const wrapped: APIGatewayProxyHandler = verifier.warpAPIGateWayProxyHandler(() => {
-            return createLambdaResponse(HTTP_RESPONSE_CODE.OK);
+            return LambdaResponseBuilder
+                .create()
+                .build(HTTP_RESPONSE_CODE.OK);
         });
 
         const result: APIGatewayProxyResult = await wrapped({
@@ -124,7 +143,12 @@ describe('Given {Verifier} Class', (): void => {
 
         expect(result).to.be.deep.equal({
             statusCode: HTTP_RESPONSE_CODE.BAD_REQUEST,
-            body: JSON.stringify(`[Sudoo-Lambda-Verify] Invalid Param, Invalid Type of [${headerKey}]; Should be type of "string"; But got type of "number"`),
+            body: JSON.stringify({
+                reason: `[Sudoo-Lambda-Verify] Invalid Param, Invalid Type of [${headerKey}]; Should be type of "string"; But got type of "number"`,
+            }),
+            headers: {},
+            multiValueHeaders: {},
+            isBase64Encoded: false,
         });
     });
 
@@ -139,7 +163,9 @@ describe('Given {Verifier} Class', (): void => {
         }));
 
         const wrapped: APIGatewayProxyHandler = verifier.warpAPIGateWayProxyHandler(() => {
-            return createLambdaResponse(HTTP_RESPONSE_CODE.OK);
+            return LambdaResponseBuilder
+                .create()
+                .build(HTTP_RESPONSE_CODE.OK);
         });
 
         const result: APIGatewayProxyResult = await wrapped({
@@ -151,6 +177,9 @@ describe('Given {Verifier} Class', (): void => {
         expect(result).to.be.deep.equal({
             statusCode: HTTP_RESPONSE_CODE.OK,
             body: JSON.stringify({}),
+            headers: {},
+            multiValueHeaders: {},
+            isBase64Encoded: false,
         });
     });
 
@@ -165,7 +194,9 @@ describe('Given {Verifier} Class', (): void => {
         }));
 
         const wrapped: APIGatewayProxyHandler = verifier.warpAPIGateWayProxyHandler(() => {
-            return createLambdaResponse(HTTP_RESPONSE_CODE.OK);
+            return LambdaResponseBuilder
+                .create()
+                .build(HTTP_RESPONSE_CODE.OK);
         });
 
         const result: APIGatewayProxyResult = await wrapped({
@@ -176,7 +207,12 @@ describe('Given {Verifier} Class', (): void => {
 
         expect(result).to.be.deep.equal({
             statusCode: HTTP_RESPONSE_CODE.BAD_REQUEST,
-            body: JSON.stringify(`[Sudoo-Lambda-Verify] Invalid Query, Invalid Type of [${headerKey}]; Should be type of "string"; But got type of "number"`),
+            body: JSON.stringify({
+                reason: `[Sudoo-Lambda-Verify] Invalid Query, Invalid Type of [${headerKey}]; Should be type of "string"; But got type of "number"`,
+            }),
+            headers: {},
+            multiValueHeaders: {},
+            isBase64Encoded: false,
         });
     });
 
@@ -191,7 +227,9 @@ describe('Given {Verifier} Class', (): void => {
         }));
 
         const wrapped: APIGatewayProxyHandler = verifier.warpAPIGateWayProxyHandler(() => {
-            return createLambdaResponse(HTTP_RESPONSE_CODE.OK);
+            return LambdaResponseBuilder
+                .create()
+                .build(HTTP_RESPONSE_CODE.OK);
         });
 
         const result: APIGatewayProxyResult = await wrapped({
@@ -203,6 +241,9 @@ describe('Given {Verifier} Class', (): void => {
         expect(result).to.be.deep.equal({
             statusCode: HTTP_RESPONSE_CODE.OK,
             body: JSON.stringify({}),
+            headers: {},
+            multiValueHeaders: {},
+            isBase64Encoded: false,
         });
     });
 
@@ -217,7 +258,9 @@ describe('Given {Verifier} Class', (): void => {
         }));
 
         const wrapped: APIGatewayProxyHandler = verifier.warpAPIGateWayProxyHandler(() => {
-            return createLambdaResponse(HTTP_RESPONSE_CODE.OK);
+            return LambdaResponseBuilder
+                .create()
+                .build(HTTP_RESPONSE_CODE.OK);
         });
 
         const result: APIGatewayProxyResult = await wrapped({
@@ -228,7 +271,12 @@ describe('Given {Verifier} Class', (): void => {
 
         expect(result).to.be.deep.equal({
             statusCode: HTTP_RESPONSE_CODE.BAD_REQUEST,
-            body: JSON.stringify(`[Sudoo-Lambda-Verify] Invalid Body, Invalid Type of [${headerKey}]; Should be type of "string"; But got type of "number"`),
+            body: JSON.stringify({
+                reason: `[Sudoo-Lambda-Verify] Invalid Body, Invalid Type of [${headerKey}]; Should be type of "string"; But got type of "number"`,
+            }),
+            headers: {},
+            multiValueHeaders: {},
+            isBase64Encoded: false,
         });
     });
 });
