@@ -105,7 +105,7 @@ describe('Given {Verifier} Class', (): void => {
         });
 
         const result: APIGatewayProxyResult = await wrapped({
-            pathParameters: {
+            queryStringParameters: {
                 [headerKey]: headerValue,
             },
         } as any, null as any, null as any) as APIGatewayProxyResult;
@@ -136,7 +136,7 @@ describe('Given {Verifier} Class', (): void => {
         });
 
         const result: APIGatewayProxyResult = await wrapped({
-            pathParameters: {
+            queryStringParameters: {
                 [headerKey]: headerValue,
             },
         } as any, null as any, null as any) as APIGatewayProxyResult;
@@ -169,7 +169,7 @@ describe('Given {Verifier} Class', (): void => {
         });
 
         const result: APIGatewayProxyResult = await wrapped({
-            queryStringParameters: {
+            pathParameters: {
                 [headerKey]: headerValue,
             },
         } as any, null as any, null as any) as APIGatewayProxyResult;
@@ -200,7 +200,7 @@ describe('Given {Verifier} Class', (): void => {
         });
 
         const result: APIGatewayProxyResult = await wrapped({
-            queryStringParameters: {
+            pathParameters: {
                 [headerKey]: headerValue,
             },
         } as any, null as any, null as any) as APIGatewayProxyResult;
