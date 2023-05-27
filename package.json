@@ -24,11 +24,11 @@
     "@sudoo/magic": "^1.9.0"
   },
   "devDependencies": {
-    "@sudoo/lambda": "^3.0.0",
+    "@sudoo/lambda": "^3.1.0",
     "@sudoo/pattern": "^1.10.0",
-    "@sudoo/triforce": "^3.7.0",
+    "@sudoo/triforce": "^3.11.0",
     "@sudoo/verify": "^1.19.0",
-    "@types/aws-lambda": "^8.10.64"
+    "@types/aws-lambda": "latest"
   },
   "nyc": {
     "extension": [
