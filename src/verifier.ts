@@ -182,12 +182,12 @@ export class LambdaVerifier {
                 return this._getNoHeaderLambdaProxyResult();
             }
 
-            if (!this._allowEmptyParam && !Boolean(event.pathParameters) && this._paramPattern) {
+            if (!this._allowEmptyParam && !Boolean(event.queryStringParameters) && this._paramPattern) {
 
                 return this._getNoParamLambdaProxyResult();
             }
 
-            if (!this._allowEmptyQuery && !Boolean(event.queryStringParameters) && this._queryPattern) {
+            if (!this._allowEmptyQuery && !Boolean(event.pathParameters) && this._queryPattern) {
 
                 return this._getNoQueryLambdaProxyResult();
             }
@@ -215,7 +215,7 @@ export class LambdaVerifier {
                 if (this._paramPattern) {
 
                     const paramVerifier: Verifier = Verifier.create(this._paramPattern);
-                    const paramVerifyResult: StringedResult = paramVerifier.conclude(event.pathParameters);
+                    const paramVerifyResult: StringedResult = paramVerifier.conclude(event.queryStringParameters);
 
                     if (!paramVerifyResult.succeed) {
 
@@ -226,7 +226,7 @@ export class LambdaVerifier {
                 if (this._queryPattern) {
 
                     const queryVerifier: Verifier = Verifier.create(this._queryPattern);
-                    const queryVerifyResult: StringedResult = queryVerifier.conclude(event.queryStringParameters);
+                    const queryVerifyResult: StringedResult = queryVerifier.conclude(event.pathParameters);
 
                     if (!queryVerifyResult.succeed) {
 
@@ -248,8 +248,8 @@ export class LambdaVerifier {
                 return await Promise.resolve(handler({
                     ...event,
                     verifiedHeader: event.headers ?? {},
-                    verifiedParams: event.pathParameters ?? {},
-                    verifiedQuery: event.queryStringParameters ?? {},
+                    verifiedParams: event.queryStringParameters ?? {},
+                    verifiedQuery: event.pathParameters ?? {},
                     verifiedBody: rawBody ?? {},
                 }, context, callback));
             } catch (error) {
