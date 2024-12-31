@@ -8,13 +8,13 @@ import { APIGatewayProxyEvent } from "aws-lambda";
 
 export const extractAndParseRawBody = (event: APIGatewayProxyEvent): any => {
 
-    if (typeof event.body !== 'string') {
+    if (typeof event.body !== "string") {
         return null;
     }
 
     if (event.isBase64Encoded) {
 
-        const decoded: string = Buffer.from(event.body, 'base64').toString();
+        const decoded: string = Buffer.from(event.body, "base64").toString();
         return JSON.parse(decoded);
     }
 
