@@ -9,8 +9,7 @@ import { LambdaResponseBuilder } from "@sudoo/lambda";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { createStrictMapPattern, createStringPattern } from "@sudoo/pattern";
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from "aws-lambda";
-import { expect } from "chai";
-import * as Chance from "chance";
+import Chance from "chance";
 import { LambdaVerifier } from "../../src";
 
 describe('Given {Verifier} Class', (): void => {
@@ -21,7 +20,7 @@ describe('Given {Verifier} Class', (): void => {
 
         const verifier: LambdaVerifier = LambdaVerifier.create();
 
-        expect(verifier).to.be.instanceOf(LambdaVerifier);
+        expect(verifier).toBeInstanceOf(LambdaVerifier);
     });
 
     it('should be able to verify header - happy path', async (): Promise<void> => {
@@ -46,7 +45,7 @@ describe('Given {Verifier} Class', (): void => {
             },
         } as any, null as any, null as any) as APIGatewayProxyResult;
 
-        expect(result).to.be.deep.equal({
+        expect(result).toEqual({
             statusCode: HTTP_RESPONSE_CODE.OK,
             body: JSON.stringify({}),
             headers: {},
@@ -77,7 +76,7 @@ describe('Given {Verifier} Class', (): void => {
             },
         } as any, null as any, null as any) as APIGatewayProxyResult;
 
-        expect(result).to.be.deep.equal({
+        expect(result).toEqual({
             statusCode: HTTP_RESPONSE_CODE.BAD_REQUEST,
             body: JSON.stringify({
                 reason: `[Sudoo-Lambda-Verify] Invalid Header, Invalid Type of [${headerKey}]; Should be type of "string"; But got type of "number"`,
@@ -110,7 +109,7 @@ describe('Given {Verifier} Class', (): void => {
             },
         } as any, null as any, null as any) as APIGatewayProxyResult;
 
-        expect(result).to.be.deep.equal({
+        expect(result).toEqual({
             statusCode: HTTP_RESPONSE_CODE.OK,
             body: JSON.stringify({}),
             headers: {},
@@ -141,7 +140,7 @@ describe('Given {Verifier} Class', (): void => {
             },
         } as any, null as any, null as any) as APIGatewayProxyResult;
 
-        expect(result).to.be.deep.equal({
+        expect(result).toEqual({
             statusCode: HTTP_RESPONSE_CODE.BAD_REQUEST,
             body: JSON.stringify({
                 reason: `[Sudoo-Lambda-Verify] Invalid Param, Invalid Type of [${headerKey}]; Should be type of "string"; But got type of "number"`,
@@ -174,7 +173,7 @@ describe('Given {Verifier} Class', (): void => {
             },
         } as any, null as any, null as any) as APIGatewayProxyResult;
 
-        expect(result).to.be.deep.equal({
+        expect(result).toEqual({
             statusCode: HTTP_RESPONSE_CODE.OK,
             body: JSON.stringify({}),
             headers: {},
@@ -205,7 +204,7 @@ describe('Given {Verifier} Class', (): void => {
             },
         } as any, null as any, null as any) as APIGatewayProxyResult;
 
-        expect(result).to.be.deep.equal({
+        expect(result).toEqual({
             statusCode: HTTP_RESPONSE_CODE.BAD_REQUEST,
             body: JSON.stringify({
                 reason: `[Sudoo-Lambda-Verify] Invalid Query, Invalid Type of [${headerKey}]; Should be type of "string"; But got type of "number"`,
@@ -238,7 +237,7 @@ describe('Given {Verifier} Class', (): void => {
             }),
         } as any, null as any, null as any) as APIGatewayProxyResult;
 
-        expect(result).to.be.deep.equal({
+        expect(result).toEqual({
             statusCode: HTTP_RESPONSE_CODE.OK,
             body: JSON.stringify({}),
             headers: {},
@@ -269,7 +268,7 @@ describe('Given {Verifier} Class', (): void => {
             }),
         } as any, null as any, null as any) as APIGatewayProxyResult;
 
-        expect(result).to.be.deep.equal({
+        expect(result).toEqual({
             statusCode: HTTP_RESPONSE_CODE.BAD_REQUEST,
             body: JSON.stringify({
                 reason: `[Sudoo-Lambda-Verify] Invalid Body, Invalid Type of [${headerKey}]; Should be type of "string"; But got type of "number"`,
